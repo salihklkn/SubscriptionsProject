@@ -18,6 +18,7 @@ namespace SubscriptionsProject.Models
         public Nullable<int> UserID { get; set; }
         public Nullable<int> SubscriptionID { get; set; }
         public Nullable<System.DateTime> TransactionDate { get; set; }
+        public Nullable<bool> IsPaid { get; set; }
     
         public virtual Subscription Subscription { get; set; }
         public virtual User User { get; set; }

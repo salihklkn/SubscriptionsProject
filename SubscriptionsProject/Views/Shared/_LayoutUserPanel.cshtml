@@ -22,9 +22,9 @@
 </head>
 <body class="skin-blue">
 	<div class="wrapper">
-		
+
 		<header class="main-header">
-			<a href="#" class="logo"><b>FunLab </b>Panel</a>
+			<a href="../Home/UserPanel" class="logo"><b>FunLab </b>Panel</a>
 			<nav class="navbar navbar-static-top" role="navigation">
 				<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
 					<span class="sr-only">Toggle navigation</span>
@@ -33,13 +33,14 @@
 		</header>
 		<aside class="main-sidebar">
 			<section class="sidebar">
-				
-				
+
+
 				<ul class="sidebar-menu">
 					<li class="header">Menü</li>
+					<li><a href="../Home/UserPanel"><i class="fa fa-book"></i> Ana Sayfa</a></li>
 					<li class="active treeview">
 						<a href="#">
-							<i class="fa fa-dashboard"></i> <span>Kullanıcı İşlemleri</span> <i class="fa fa-angle-left pull-right"></i>
+							<i class="fa fa-user"></i> <span>Kullanıcı İşlemleri</span> <i class="fa fa-angle-left pull-right"></i>
 						</a>
 						<ul class="treeview-menu">
 							<li class="active"><a href="../Home/UserInformation"><i class="fa fa-circle-o"></i>Bilgilerim</a></li>
@@ -49,74 +50,61 @@
 						<a href="#">
 							<i class="fa fa-files-o"></i>
 							<span>Abonelik İşlemlerim</span>
-							<span class="label label-primary pull-right">4</span>
+							<span class="label label-primary pull-right"></span>
 						</a>
 						<ul class="treeview-menu">
-							<li><a href="index2.html"><i class="fa fa-circle-o"></i>Tüm işlemlerim</a></li>
+							<li><a href="../Home/UserAllProcess"><i class="fa fa-circle-o"></i>Tüm işlemlerim</a></li>
 						</ul>
 					</li>
 					<li>
-						<a href="pages/widgets.html">
-							<i class="fa fa-th"></i> <span>Widgets</span> <small class="label pull-right bg-green">new</small>
-						</a>
+						<br />	<br />	<br />	<br />	<br />	<br />
 					</li>
-					<li class="treeview">
-						<a href="#">
-							<i class="fa fa-pie-chart"></i>
-							<span>Charts</span>
-							<i class="fa fa-angle-left pull-right"></i>
-						</a>
-						<ul class="treeview-menu">
-							<li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i> Morris</a></li>
-							<li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li>
-							<li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>
-						</ul>
+					<li>
+						<button class="btn btn-danger center-block" onclick="Logout()">Çıkış Yap</button>
 					</li>
-					<li><a href="documentation/index.html"><i class="fa fa-book"></i> Documentation</a></li>
-					
 				</ul>
 			</section>
-			
+
 		</aside>
 
-		
+
 		<div class="content-wrapper">
-			
+
 
 			<section class="content">
 
-				@RenderBody()			
+				@RenderBody()
 
 			</section>
 		</div>
-		
+
 	</div>
-	
+
 	<script src="~/Content/others/plugins/jQuery/jQuery-2.1.3.min.js"></script>
-	
-	
-	
+
+
+
 	<script src="~/Content/others/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-	
+
 	<script src="~/Content/others/plugins/morris/morris.min.js" type="text/javascript"></script>
-	
+
 	<script src="~/Content/others/plugins/sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
-	
+
 	<script src="~/Content/others/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js" type="text/javascript"></script>
 	<script src="~/Content/others/plugins/jvectormap/jquery-jvectormap-world-mill-en.js" type="text/javascript"></script>
-	
+
 	<script src="~/Content/others/plugins/knob/jquery.knob.js" type="text/javascript"></script>
-	
+
 	<script src="~/Content/others/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
-	
+
 	<script src="~/Content/others/plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
-	
+
 	<script src="~/Content/others/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js" type="text/javascript"></script>
 
 	<script src="~/Content/others/plugins/iCheck/icheck.min.js" type="text/javascript"></script>
 
 	<script src="~/Content/others/plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-	
+
 	<script src='~/Content/others/plugins/fastclick/fastclick.min.js'></script>
 
 	<script src="~/Content/others/dist/js/app.min.js" type="text/javascript"></script>
@@ -124,10 +112,32 @@
 	<script src="~/Content/others/dist/js/pages/dashboard.js" type="text/javascript"></script>
 
 	<script src="~/Content/others/dist/js/demo.js" type="text/javascript"></script>
+
+
+
+	<script type="text/javascript">
+
+		function Logout() {
+
+			$.ajax({
+				url: '/Home/Logout',
+				type: 'POST',
+				success: function (result) {
+					if (!result.success) {
+						location.reload();
+
+					} else {
+						location.reload();
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log(status + ': ' + error);
+				}
+			});
+
+		}
+
+	</script>
 </body>
-
-
-
-
 
 </html>

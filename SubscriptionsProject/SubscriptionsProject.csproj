@@ -840,6 +840,7 @@
     <Content Include="Views\Shared\_LayoutUserPanel.cshtml" />
     <Content Include="Views\Home\UserPanel.cshtml" />
     <Content Include="Views\Home\UserInformation.cshtml" />
+    <Content Include="Views\Home\UserAllProcess.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

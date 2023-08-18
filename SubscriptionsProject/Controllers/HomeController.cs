@@ -2,7 +2,9 @@
 using SubscriptionsProject.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
@@ -14,9 +16,9 @@ namespace SubscriptionsProject.Controllers
 		SubscribeMembers_DBEntities db = new SubscribeMembers_DBEntities();
 		public ActionResult Index()
 		{
+		
 			return View();
 		}
-
 
 		[HttpPost]
 		public ActionResult Login(string username, string password)
@@ -98,45 +100,121 @@ namespace SubscriptionsProject.Controllers
 		}
 
 		[HttpPost]
-		public JsonResult UpdateUserSubscription(string subsId)
+		public async Task<JsonResult> UpdateUserSubscription(string subsId)
 		{
 			try
 			{
+				int subscriptionId = Convert.ToInt32(subsId);
 				Helpers helper = new Helpers();
 				string sessionValue = helper.hasSessionAuth();
 				var getUser = helper.GetUserWithUserName(sessionValue);
 
-				if (getUser.CurrentSubscriptionID == Convert.ToInt32(subsId))
+				if (getUser.CurrentSubscriptionID == subscriptionId)
 				{
 					return Json(new { success = false, message = "Bu abonelik kampanyasına zaten üyesiniz." });
 				}
 
-				var getSubsInfo = db.Subscriptions.Where(x => x.ID == Convert.ToInt32(subsId)).First();
+				var getSubsInfo = await db.Subscriptions.Where(x => x.ID == subscriptionId).FirstAsync();
 
 				SubscriptionTransaction sbsTrancastion = new SubscriptionTransaction();
-				sbsTrancastion.SubscriptionID = Convert.ToInt32(subsId);
+				sbsTrancastion.SubscriptionID = subscriptionId;
 				sbsTrancastion.UserID = getUser.ID;
 				sbsTrancastion.TransactionDate = DateTime.Now;
+				sbsTrancastion.IsPaid = true;
 				db.SubscriptionTransactions.Add(sbsTrancastion);
-				db.SaveChanges();
+				await db.SaveChangesAsync();
 
 
-
-
-				var updateUserCurrents = db.Users.Where(x => x.ID == getUser.ID).First();
+				var updateUserCurrents = await db.Users.Where(x => x.ID == getUser.ID).FirstAsync();
 				updateUserCurrents.ConditionalDate = DateTime.Now.AddDays(Convert.ToInt32(getSubsInfo.SubscriptionDayCount));
-				updateUserCurrents.CurrentSubscriptionID = Convert.ToInt32(subsId);
-				db.SaveChanges();
+				updateUserCurrents.CurrentSubscriptionID = subscriptionId;
+				await db.SaveChangesAsync();
 
-				return Json(new { success = false, message = "Bu abonelik kampanyasına zaten üyesiniz." });
+				return Json(new { success = true, message = "Abonelik değiştirme işleminiz başarıyla gerçekleşti" });
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 				return Json(new { success = false, message = "Bir hata oluştu" });
 			}
 
 
 		}
+
+
+
+		public ActionResult UserAllProcess()
+		{
+			Helpers helper = new Helpers();
+			string sessionValue = helper.hasSessionAuth();
+
+			if (String.IsNullOrEmpty(sessionValue) == true)
+			{
+				return RedirectToAction("Index");
+			}
+
+			var getUser = helper.GetUserWithUserName(sessionValue);
+
+			var getAllHistory = db.SubscriptionTransactions.Where(x => x.UserID == getUser.ID).OrderByDescending(x=> x.TransactionDate).ToList();
+
+
+			return View(getAllHistory);
+		}
+
+
+		[HttpPost]
+		public JsonResult UpdateUserBillingInformation(string tranId)
+		{
+			try
+			{
+				int transactionId = Convert.ToInt32(tranId);
+				Helpers helper = new Helpers();
+				string sessionValue = helper.hasSessionAuth();
+				var getUser = helper.GetUserWithUserName(sessionValue);
+
+				var getTranInfo = db.SubscriptionTransactions.Where(x => x.ID == transactionId).First();
+				getTranInfo.IsPaid = true;
+				db.SaveChanges();
+
+				return Json(new { success = true, message = "Ödeme işlemi başarılı" });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = "Bir hata oluştu" });
+			}
+
+		}
+
+		[HttpPost]
+		public JsonResult PaySubscription(string tranId)
+		{
+			try
+			{
+				int transactionId = Convert.ToInt32(tranId);
+				Helpers helper = new Helpers();
+				string sessionValue = helper.hasSessionAuth();
+				var getUser = helper.GetUserWithUserName(sessionValue);
+
+				var getTranInfo = db.SubscriptionTransactions.Where(x => x.ID == transactionId).First();
+				getTranInfo.IsPaid = true;
+				db.SaveChanges();
+
+				return Json(new { success = true, message = "Ödeme işlemi başarılı" });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = "Bir hata oluştu" });
+			}
+
+
+		}
+
+		[HttpPost]
+		public ActionResult Logout()
+		{
+			Session.Abandon();
+			return RedirectToAction("Index","Home");
+		}
+
 
 
 	}

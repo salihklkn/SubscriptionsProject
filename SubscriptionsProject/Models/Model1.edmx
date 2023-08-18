@@ -42,6 +42,7 @@
           <Property Name="UserID" Type="int" />
           <Property Name="SubscriptionID" Type="int" />
           <Property Name="TransactionDate" Type="datetime" />
+          <Property Name="IsPaid" Type="bit" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -176,6 +177,7 @@
           <Property Name="TransactionDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Subscription" Relationship="Self.FK_SubscriptionTransactions_Subscriptions" FromRole="SubscriptionTransactions" ToRole="Subscriptions" />
           <NavigationProperty Name="User" Relationship="Self.FK_SubscriptionTransactions_Users" FromRole="SubscriptionTransactions" ToRole="Users" />
+          <Property Name="IsPaid" Type="Boolean" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -306,6 +308,7 @@
           <EntitySetMapping Name="SubscriptionTransactions">
             <EntityTypeMapping TypeName="salihka1_SubscribeMembers_DBModel.SubscriptionTransaction">
               <MappingFragment StoreEntitySet="SubscriptionTransactions">
+                <ScalarProperty Name="IsPaid" ColumnName="IsPaid" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="SubscriptionID" ColumnName="SubscriptionID" />
