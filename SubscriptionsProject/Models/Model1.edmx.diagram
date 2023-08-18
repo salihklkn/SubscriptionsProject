@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="cc621edd6ed34b579bb65eea9b2dbfde" Name="Diagram1">
+        <EntityTypeShape EntityType="salihka1_SubscribeMembers_DBModel.AdminPermission" Width="1.5" PointX="2.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="salihka1_SubscribeMembers_DBModel.AdminUser" Width="1.5" PointX="5" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="salihka1_SubscribeMembers_DBModel.Subscription" Width="1.5" PointX="0.75" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="salihka1_SubscribeMembers_DBModel.SubscriptionTransaction" Width="1.5" PointX="5.25" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="salihka1_SubscribeMembers_DBModel.User" Width="1.5" PointX="3" PointY="5.5" IsExpanded="true" />
+        <AssociationConnector Association="salihka1_SubscribeMembers_DBModel.FK_AdminUsers_AdminPermissions" ManuallyRouted="false" />
+        <AssociationConnector Association="salihka1_SubscribeMembers_DBModel.FK_SubscriptionTransactions_Subscriptions" ManuallyRouted="false" />
+        <AssociationConnector Association="salihka1_SubscribeMembers_DBModel.FK_Users_Subscriptions" ManuallyRouted="false" />
+        <AssociationConnector Association="salihka1_SubscribeMembers_DBModel.FK_SubscriptionTransactions_Users" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

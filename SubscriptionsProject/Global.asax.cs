@@ -20,4 +20,5 @@ namespace SubscriptionsProject
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
     }
+
 }
