@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="salihka1_SubscribeMembers_DBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="salihka1_SubscribeMembers_DBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AdminPermissions">
           <Key>
             <PropertyRef Name="ID" />
@@ -29,7 +29,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Name" Type="nvarchar" MaxLength="750" />
           <Property Name="Price" Type="decimal" Precision="18" Scale="2" />
           <Property Name="SubscriptionDayCount" Type="int" />
           <Property Name="IsActive" Type="bit" />
@@ -56,6 +56,7 @@
           <Property Name="IsActive" Type="bit" />
           <Property Name="CurrentSubscriptionID" Type="int" />
           <Property Name="ConditionalDate" Type="datetime" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <Association Name="FK_AdminUsers_AdminPermissions">
           <End Role="AdminPermissions" Type="Self.AdminPermissions" Multiplicity="0..1" />
@@ -128,8 +129,7 @@
             <End Role="Users" EntitySet="Users" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="salihka1_SubscribeMembers_DBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -159,7 +159,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="750" FixedLength="false" Unicode="true" />
           <Property Name="Price" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="SubscriptionDayCount" Type="Int32" />
           <Property Name="IsActive" Type="Boolean" />
@@ -192,6 +192,7 @@
           <Property Name="ConditionalDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Subscription" Relationship="Self.FK_Users_Subscriptions" FromRole="Users" ToRole="Subscriptions" />
           <NavigationProperty Name="SubscriptionTransactions" Relationship="Self.FK_SubscriptionTransactions_Users" FromRole="Users" ToRole="SubscriptionTransactions" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_AdminUsers_AdminPermissions">
           <End Role="AdminPermissions" Type="Self.AdminPermission" Multiplicity="0..1" />
@@ -315,6 +316,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="salihka1_SubscribeMembers_DBModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
                 <ScalarProperty Name="Password" ColumnName="Password" />

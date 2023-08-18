@@ -29,6 +29,7 @@ namespace SubscriptionsProject.Models
         public Nullable<bool> IsActive { get; set; }
         public Nullable<int> CurrentSubscriptionID { get; set; }
         public Nullable<System.DateTime> ConditionalDate { get; set; }
+        public string PhoneNumber { get; set; }
     
         public virtual Subscription Subscription { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
