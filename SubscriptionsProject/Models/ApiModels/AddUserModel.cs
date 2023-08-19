@@ -65,5 +65,23 @@ namespace SubscriptionsProject.Models.ApiModels
 		public bool isActive { get; set; }
 	}
 
+	public class UnPaidDataResponse
+	{
+		public int ID { get; set; }
+		public int UserID { get; set; }
+		public int SubscriptionID { get; set; }
+	}
+
+	public class PaymentUserResponse
+	{
+		public int ID { get; set; }
+		public int UserID { get; set; }
+		public int SubscriptionID { get; set; }
+	}
+	public class FreezeUserModel
+	{
+		public int ID { get; set; }
+	}
+
 
 }

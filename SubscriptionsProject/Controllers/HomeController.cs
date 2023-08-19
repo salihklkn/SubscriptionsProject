@@ -173,6 +173,11 @@ namespace SubscriptionsProject.Controllers
 
 				var getTranInfo = db.SubscriptionTransactions.Where(x => x.ID == transactionId).First();
 				getTranInfo.IsPaid = true;
+				getTranInfo.TransactionDate = DateTime.Now;
+				db.SaveChanges();
+
+				var getUserConditionalDate = db.Users.Where(x => x.ID == getUser.ID).First();
+				getUserConditionalDate.ConditionalDate = DateTime.Now.AddDays(Convert.ToInt32(getUserConditionalDate.Subscription.SubscriptionDayCount));
 				db.SaveChanges();
 
 				return Json(new { success = true, message = "Ödeme işlemi başarılı" });

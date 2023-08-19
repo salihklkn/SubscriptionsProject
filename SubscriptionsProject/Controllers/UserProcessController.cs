@@ -114,7 +114,7 @@ namespace SubscriptionsProject.Controllers
 		///içinde girilen değerlere göre geçen tüm kullanıcılar bulunur ve geçmiş işlemleri de gözükür
 		[HttpGet]
 		[Route("api/GetUser")]
-		[JwtAuthentication]		
+		[JwtAuthentication]
 		public List<GetUserModel> GetUser(GetUserModel usr)
 		{
 			var getAllUser = db.Users.Where(x => x.ID == usr.ID || x.Name == usr.Name || x.Surname == usr.Surname || x.PhoneNumber == usr.PhoneNumber || x.Username == usr.UserName).ToList();
@@ -139,7 +139,7 @@ namespace SubscriptionsProject.Controllers
 
 				foreach (var tranitem in item.SubscriptionTransactions)
 				{
-					
+
 					newUser.Transactions.Add(new TransactionResponseModel()
 					{
 						isPaid = Convert.ToBoolean(tranitem.IsPaid),
@@ -152,5 +152,59 @@ namespace SubscriptionsProject.Controllers
 			}
 			return users;
 		}
+
+
+		[HttpPost]
+		[Route("api/FreezeUser")]
+		[JwtAuthentication]
+		public string FreezeUser([FromBody] FreezeUserModel user)
+		{
+			try
+			{
+				if (user.ID == 0)
+				{
+					return "ID değeri boş bırakılamaz";
+				}
+
+				var getUser = db.Users.Where(x => x.ID == user.ID).FirstOrDefault();
+
+				if (getUser == null)
+				{
+					return "Belirtilen ID değerine uygun bir kayıt bulunamadı";
+				}
+
+				if (getUser.IsActive == false)
+				{
+					return "Bu kullanıcı zaten donduruldu";
+				}
+
+				var hasUnpaidTrans = db.SubscriptionTransactions.Where(x => x.UserID == getUser.ID && x.IsPaid == false).Count();
+
+				if (hasUnpaidTrans > 0)
+				{
+					return "BU üyemiz için Ödenmemiş faturalar mevcut.";
+				}
+
+				getUser.IsActive = false;
+				db.SaveChanges();
+
+				var getDepositAmount = db.UserRegisterDepozits.Where(x => x.UserID == getUser.ID).FirstOrDefault();
+
+				if (getDepositAmount != null)
+				{
+					decimal price = Convert.ToDecimal(getDepositAmount.DepozitPrice);
+					return "Abonelik Dondurma işlemi tamamlandı. Lütfen kullanıcının ödemiş olduğu " + price.ToString() + "₺ depozito tutarını iade ediniz";
+				}
+
+
+				return "Başarılı";
+			}
+			catch (Exception ex)
+			{
+				return ex.Message;
+			}
+			
+		}
+
 	}
 }

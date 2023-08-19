@@ -201,6 +201,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PaymentController.cs" />
     <Compile Include="Controllers\SubscriptionsProcessController.cs" />
     <Compile Include="Controllers\UserProcessController.cs" />
     <Compile Include="Global.asax.cs">
