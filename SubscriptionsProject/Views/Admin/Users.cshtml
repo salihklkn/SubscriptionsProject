@@ -50,9 +50,7 @@
 						<td><label class="btn btn-danger disabled">Pasif Üye</label> </td>
 					}
 
-
-					<td><button class="btn btn-warning btn-sm float-end align-content-end">Bildirim Gönder</button></td>
-					<td><button class="btn btn-danger btn-sm float-end align-content-end">Üyeliği Dondur</button></td>
+					<td><button class="btn btn-danger btn-sm float-end align-content-end" onclick="freezeMember(@item.ID)" >Üyeliği Dondur</button></td>
 				</tr>
 				}
 
@@ -185,6 +183,26 @@
 	}
 
 
+	function freezeMember(memberId)
+	{
+		$.ajax({
+			url: '/Admin/FreezeMember',
+			type: 'POST',
+			dataType: 'json',
+			data: { memberId: memberId },
+			success: function (result) {
+				if (!result.success) {
+					alert(result.message);
+				} else {
+					alert(result.message);
+					location.reload();
+				}
+			},
+			error: function (xhr, status, error) {
+				console.log(status + ': ' + error);
+			}
+		});
+	}
 
 
 	function OpenModal() {

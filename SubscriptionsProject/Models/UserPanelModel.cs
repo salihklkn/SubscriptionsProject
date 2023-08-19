@@ -37,5 +37,6 @@ namespace SubscriptionsProject.Models
 		public List<User> Users { get; set; }
 		public List<Subscription> Subscriptions { get; set; }
 	}
+	
 
 }

@@ -121,5 +121,50 @@ namespace SubscriptionsProject.Controllers
 			}
 		}
 
+
+
+
+		public ActionResult PaymentProcess()
+		{
+			Helpers helper = new Helpers();
+			string sessionValue = helper.hasSessionAuth(true);
+
+			if (String.IsNullOrEmpty(sessionValue) == true)
+			{
+				return RedirectToAction("Index");
+			}
+
+			var transactions = db.SubscriptionTransactions.OrderByDescending(x => x.TransactionDate).ToList();
+			return View(transactions);
+		}
+
+
+		[HttpPost]
+		public JsonResult FreezeMember(int memberId)
+		{
+			var getUser = db.Users.Where(x => x.ID == memberId).First();
+
+			if (db.SubscriptionTransactions.Where(x=> x.UserID == memberId && x.IsPaid == false).Count() > 0)
+			{
+				return Json(new { success = false, message = "Henüz bu kullanıcının ödenmemiş faturaları mevcut, üye dondurulamaz, önce ödeme işlemlerini yapınız" });
+			}
+
+			getUser.IsActive = false;
+			db.SaveChanges();
+
+
+			var getDepozit = db.UserRegisterDepozits.Where(x => x.UserID == memberId).FirstOrDefault();
+
+			if (getDepozit == null)
+			{
+				return Json(new { success = true, message = "İşlem başarıyla yapıldı" });
+			}
+			else
+			{
+				return Json(new { success = true, message = "İşlem başarıyla yapıldı lütfen son olarak kişiye  " + getDepozit.DepozitPrice + " ₺ depozitosunu ödeyiniz." });
+			}
+
+		}
+
 	}
 }

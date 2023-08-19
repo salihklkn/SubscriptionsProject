@@ -1,0 +1,118 @@
+﻿@model List<SubscriptionsProject.Models.SubscriptionTransaction>
+@{
+	ViewBag.Title = "PaymentProcess";
+	Layout = "~/Views/Shared/LayoutAdminPanel.cshtml";
+}
+
+<div class="box">
+	<div class="box-header">
+		<h3 class="box-title">Faturalar</h3>
+	</div>
+
+	<input type="text" class="form-control  center-block" id="searchInput" placeholder="Arama...">
+
+
+
+
+	<div class="box-body">
+		<table id="example1" name="example1" class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Adı Soyadı</th>
+					<th>Mevcut Aboneliği</th>
+					<th>İşlem Tarihi</th>
+					<th>Telefon Numarası</th>
+					<th>Abonelik Bitiş Tarihi</th>
+					<th>Durum</th>
+				</tr>
+			</thead>
+			<tbody>
+
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td>@item.User.Name  @item.User.Surname</td>
+						<td>
+							@item.Subscription.Name
+						</td>
+						<td>@item.TransactionDate</td>
+
+						<td> @item.User.PhoneNumber</td>
+
+						<td> @item.User.ConditionalDate</td>
+
+						@if (@item.IsPaid == true)
+						{
+							<td><label class="btn btn-success disabled">Ödenmiş</label> </td>
+						}
+						else
+						{
+							<td><label class="btn btn-danger"  onclick="UpdateUserBillingInformation(@item.ID)">Ödenmemiş - Öde</label> </td>
+							<td><button class="btn btn-warning btn-sm float-end align-content-end"  onclick="sendSmsNotification()" >Bildirim Gönder</button></td>
+							<td><button class="btn btn-danger btn-sm float-end align-content-end" onclick="freezeMember(@item.User.ID)">Üyeliği Dondur</button></td>
+						}
+
+
+					</tr>
+				}
+
+		</table>
+	</div>
+</div>
+
+
+
+
+<script type="text/javascript">
+
+	function freezeMember(memberId) {
+		$.ajax({
+			url: '/Admin/FreezeMember',
+			type: 'POST',
+			dataType: 'json',
+			data: { memberId: memberId },
+			success: function (result) {
+				if (!result.success) {
+					alert(result.message);
+				} else {
+					alert(result.message);
+					location.reload();
+				}
+			},
+			error: function (xhr, status, error) {
+				console.log(status + ': ' + error);
+			}
+		});
+	}
+
+
+	function sendSmsNotification(memberId) {
+		alert("Test // SMS Gönderildi.")
+	}
+
+
+	function UpdateUserBillingInformation(value) {
+		
+		$.ajax({
+			url: '/Home/UpdateUserBillingInformation',
+			type: 'POST',
+			data: { tranId: value },
+			success: function (result) {
+				if (!result.success) {
+					alert(result.message);
+
+				} else {
+
+					location.reload();
+				}
+			},
+			error: function (xhr, status, error) {
+				console.log(status + ': ' + error);
+			}
+		});
+
+	}
+
+
+
+</script>

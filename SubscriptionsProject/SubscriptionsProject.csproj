@@ -847,6 +847,7 @@
     <Content Include="Views\Shared\LayoutAdminPanel.cshtml" />
     <Content Include="Views\Admin\AdminPanel.cshtml" />
     <Content Include="Views\Admin\Users.cshtml" />
+    <Content Include="Views\Admin\PaymentProcess.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
