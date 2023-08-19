@@ -49,7 +49,7 @@ namespace SubscriptionsProject.Controllers
 
 			var getUser = helper.GetUserWithUserName(sessionValue);
 			panel.UserItem = getUser;
-			panel.CampaignCount = db.Subscriptions.Count();
+			panel.CampaignCount = db.Subscriptions.Where(x=> x.IsActive == true).Count();
 			panel.UserCount = db.Users.Count();
 			panel.ProcessCount = db.SubscriptionTransactions.Where(x => x.UserID == getUser.ID).Count();
 

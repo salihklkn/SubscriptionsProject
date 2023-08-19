@@ -11,8 +11,14 @@ namespace SubscriptionsProject.Common
 
 		#region UsersProcess
 
-		public string hasSessionAuth()
+		public string hasSessionAuth(bool isAdmin = false)
 		{
+			if (isAdmin == true)
+			{
+				object isSessionAdmin = HttpContext.Current.Session[Consts.SessionControlAdminValue];
+
+				return isSessionAdmin == null ? String.Empty : Convert.ToString(isSessionAdmin);
+			}
 			object isSession = HttpContext.Current.Session[Consts.SessionControlValue];
 			
 			return isSession == null ? String.Empty : Convert.ToString(isSession);
@@ -20,6 +26,18 @@ namespace SubscriptionsProject.Common
 		public User GetUserWithUserName(string username)
 		{
 			var getUser = db.Users.Where(x => x.Username == username).FirstOrDefault();
+			return getUser;
+		}
+
+		public AdminUser GetAdminWithUserName(string username)
+		{
+			var getUser = db.AdminUsers.Where(x => x.UserName == username).FirstOrDefault();
+			return getUser;
+		}
+
+		public AdminUser GetLoginAdmin(string username, string password)
+		{
+			var getUser = db.AdminUsers.Where(x => x.UserName == username && x.Password == password).FirstOrDefault();
 			return getUser;
 		}
 

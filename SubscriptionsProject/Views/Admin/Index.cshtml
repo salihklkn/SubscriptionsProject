@@ -12,12 +12,12 @@
 					<div class="row">
 						<div class="col-md-7 pe-0">
 							<div class="form-left h-100 py-5 px-5">
-								<form action="" class="row g-4">
+								<form action="@Url.Action("Login", "Admin")" method="post" class="row g-4">
 									<div class="col-12">
 										<label>Kullanıcı Adınız <span class="text-danger">*</span></label>
 										<div class="input-group">
 											<div class="input-group-text"><i class="fa fa-user"></i></div>
-											<input type="text" class="form-control" placeholder="Kullanıcı Adı Giriniz">
+											<input type="text"  name="username" class="form-control" placeholder="Kullanıcı Adı Giriniz">
 										</div>
 									</div>
 
@@ -25,7 +25,7 @@
 										<label>Şifreniz<span class="text-danger">*</span></label>
 										<div class="input-group">
 											<div class="input-group-text"><i class="fa fa-key"></i></div>
-											<input type="text" class="form-control" placeholder="Şifrenizi Giriniz">
+											<input type="text" name="password" class="form-control" placeholder="Şifrenizi Giriniz">
 										</div>
 									</div>
 

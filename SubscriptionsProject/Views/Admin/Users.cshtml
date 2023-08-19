@@ -1,0 +1,213 @@
+﻿@model SubscriptionsProject.Models.AdminPanelUsersModel
+@{
+	ViewBag.Title = "Users";
+	Layout = "~/Views/Shared/LayoutAdminPanel.cshtml";
+}
+
+<button class="btn btn-success float-end align-content-end" onclick="OpenModal()"> Yeni Ekle</button>
+
+<div class="box">
+	<div class="box-header">
+		<h3 class="box-title">Tüm Kullanıcılar</h3>
+	</div>
+
+	<input type="text" class="form-control  center-block" id="searchInput" placeholder="Arama...">
+
+
+
+
+	<div class="box-body">
+		<table id="example1" name="example1" class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Adı Soyadı</th>
+					<th>Mevcut Aboneliği</th>
+					<th>Kayıt Tarihi</th>
+					<th>Telefon Numarası</th>
+					<th>Abonelik Bitiş Tarihi</th>
+					<th>Durum</th>
+				</tr>
+			</thead>
+			<tbody>
+
+				@foreach (var item in Model.Users)
+				{
+				<tr>
+					<td>@item.Name  @item.Surname</td>
+					<td>
+						@item.Subscription.Name
+					</td>
+					<td>@item.RegistrationDate</td>
+					<td> @item.PhoneNumber</td>
+					<td> @item.ConditionalDate</td>
+
+					@if (@item.IsActive == true)
+					{
+						<td><label class="btn btn-success disabled">Aktif</label> </td>
+					}
+					else
+					{
+						<td><label class="btn btn-danger disabled">Pasif Üye</label> </td>
+					}
+
+
+					<td><button class="btn btn-warning btn-sm float-end align-content-end">Bildirim Gönder</button></td>
+					<td><button class="btn btn-danger btn-sm float-end align-content-end">Üyeliği Dondur</button></td>
+				</tr>
+				}
+
+		</table>
+	</div>
+</div>
+
+
+
+
+
+<!-- Popup Modal -->
+<div class="modal" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="loginModalLabel">Yeni Kullanıcı Ekle</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label for="username">Adı</label>
+					<input type="text" class="form-control" id="name" placeholder="Adı">
+				</div>
+				<div class="form-group">
+					<label for="password">Soyadı</label>
+					<input type="tel" class="form-control" id="surname" placeholder="Soyadı">
+				</div>
+				<div class="form-group">
+					<label for="username">Kullanıcı Adı</label>
+					<input type="text" class="form-control" id="username" placeholder="Kullanıcı Adı">
+				</div>
+				<div class="form-group">
+					<label for="password">Şifre</label>
+					<input type="password" class="form-control" id="password" placeholder="Şifre">
+				</div>
+				<div class="form-group">
+					<label for="password">Telefon Numarası</label>
+					<input type="text" class="form-control" id="phone" placeholder="Telefon Numarası">
+				</div>
+
+				<label>Abonelik Seçin</label>
+				<select class="form-control" id="subscriptionSelect">
+					<option value="">Lütfen bir kategori seçin</option>
+					@foreach (var item in Model.Subscriptions)
+					{
+						<option value="@item.ID">
+							@item.Name     +   @item.Price ₺   + @item.SubscriptionDayCount Günlük
+						</option>
+					}
+
+				</select>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+				<button type="button" class="btn btn-primary" onclick="AddUser()">Ekle</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+
+
+
+	function AddUser() {
+
+		var subscriptionSelect = document.getElementById("subscriptionSelect");
+		var selectedValue = subscriptionSelect.value;
+
+		if (selectedValue === "") {
+			alert("Abonelik Seçimi Boş Bırakılamaz");
+		}
+		else
+		{
+			var name = document.getElementById("name").value;
+			var surname = document.getElementById("surname").value;
+			var password = document.getElementById("password").value;
+			var username = document.getElementById("username").value;
+			var phone = document.getElementById("phone").value;
+			
+			$.ajax({
+				url: '/Admin/AddNewUser',
+				type: 'POST',
+				dataType: 'json',
+				data:
+				{
+					Name: name,
+					Surname: surname,
+					Password: password,
+					Username: username,
+					PhoneNumber: phone,
+					ID: selectedValue,
+				},
+				success: function (result) {
+					if (!result.success) {
+						alert(result.message);
+					} else {
+						alert(result.message);
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log(status + ': ' + error);
+				}
+			});
+		}
+
+		
+
+
+	}
+
+
+
+
+	function OpenModal() {
+		$("#loginModal").modal("show");
+	}
+
+
+
+
+
+	const searchInput = document.getElementById('searchInput');
+	const tableRows = document.querySelectorAll('#example1 tbody tr');
+
+	searchInput.addEventListener('input', function () {
+		const searchTerm = searchInput.value.toLowerCase();
+
+		tableRows.forEach(row => {
+			const rowText = row.textContent.toLowerCase();
+			if (rowText.includes(searchTerm)) {
+				row.style.display = '';
+			} else {
+				row.style.display = 'none';
+			}
+		});
+	});
+</script>
