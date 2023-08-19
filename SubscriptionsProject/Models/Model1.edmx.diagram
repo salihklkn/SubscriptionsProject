@@ -14,6 +14,8 @@
         <AssociationConnector Association="salihka1_SubscribeMembers_DBModel.FK_SubscriptionTransactions_Subscriptions" ManuallyRouted="false" />
         <AssociationConnector Association="salihka1_SubscribeMembers_DBModel.FK_Users_Subscriptions" ManuallyRouted="false" />
         <AssociationConnector Association="salihka1_SubscribeMembers_DBModel.FK_SubscriptionTransactions_Users" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="salihka1_SubscribeMembers_DBModel.UserRegisterDepozit" Width="1.5" PointX="5.25" PointY="8.375" />
+        <AssociationConnector Association="salihka1_SubscribeMembers_DBModel.FK__UserRegis__UserI__36B12243" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

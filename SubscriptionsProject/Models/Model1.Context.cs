@@ -30,5 +30,6 @@ namespace SubscriptionsProject.Models
         public virtual DbSet<Subscription> Subscriptions { get; set; }
         public virtual DbSet<SubscriptionTransaction> SubscriptionTransactions { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserRegisterDepozit> UserRegisterDepozits { get; set; }
     }
 }

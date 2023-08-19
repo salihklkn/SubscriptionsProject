@@ -59,6 +59,26 @@
           <Property Name="ConditionalDate" Type="datetime" />
           <Property Name="PhoneNumber" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="UserRegisterDepozit">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="DepozitPrice" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <Association Name="FK__UserRegis__UserI__36B12243">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="UserRegisterDepozit" Type="Self.UserRegisterDepozit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserRegisterDepozit">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AdminUsers_AdminPermissions">
           <End Role="AdminPermissions" Type="Self.AdminPermissions" Multiplicity="0..1" />
           <End Role="AdminUsers" Type="Self.AdminUsers" Multiplicity="*" />
@@ -113,6 +133,11 @@
           <EntitySet Name="Subscriptions" EntityType="Self.Subscriptions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubscriptionTransactions" EntityType="Self.SubscriptionTransactions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserRegisterDepozit" EntityType="Self.UserRegisterDepozit" Schema="salihka1_sklkn" store:Type="Tables" />
+          <AssociationSet Name="FK__UserRegis__UserI__36B12243" Association="Self.FK__UserRegis__UserI__36B12243">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserRegisterDepozit" EntitySet="UserRegisterDepozit" />
+          </AssociationSet>
           <AssociationSet Name="FK_AdminUsers_AdminPermissions" Association="Self.FK_AdminUsers_AdminPermissions">
             <End Role="AdminPermissions" EntitySet="AdminPermissions" />
             <End Role="AdminUsers" EntitySet="AdminUsers" />
@@ -195,6 +220,7 @@
           <NavigationProperty Name="Subscription" Relationship="Self.FK_Users_Subscriptions" FromRole="Users" ToRole="Subscriptions" />
           <NavigationProperty Name="SubscriptionTransactions" Relationship="Self.FK_SubscriptionTransactions_Users" FromRole="Users" ToRole="SubscriptionTransactions" />
           <Property Name="PhoneNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserRegisterDepozits" Relationship="salihka1_SubscribeMembers_DBModel.FK__UserRegis__UserI__36B12243" FromRole="User" ToRole="UserRegisterDepozit" />
         </EntityType>
         <Association Name="FK_AdminUsers_AdminPermissions">
           <End Role="AdminPermissions" Type="Self.AdminPermission" Multiplicity="0..1" />
@@ -266,7 +292,33 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="SubscriptionTransactions" EntitySet="SubscriptionTransactions" />
           </AssociationSet>
+          <EntitySet Name="UserRegisterDepozits" EntityType="salihka1_SubscribeMembers_DBModel.UserRegisterDepozit" />
+          <AssociationSet Name="FK__UserRegis__UserI__36B12243" Association="salihka1_SubscribeMembers_DBModel.FK__UserRegis__UserI__36B12243">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserRegisterDepozit" EntitySet="UserRegisterDepozits" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="UserRegisterDepozit">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="DepozitPrice" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="User" Relationship="salihka1_SubscribeMembers_DBModel.FK__UserRegis__UserI__36B12243" FromRole="UserRegisterDepozit" ToRole="User" />
+        </EntityType>
+        <Association Name="FK__UserRegis__UserI__36B12243">
+          <End Type="salihka1_SubscribeMembers_DBModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="salihka1_SubscribeMembers_DBModel.UserRegisterDepozit" Role="UserRegisterDepozit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserRegisterDepozit">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -329,6 +381,15 @@
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="CurrentSubscriptionID" ColumnName="CurrentSubscriptionID" />
                 <ScalarProperty Name="ConditionalDate" ColumnName="ConditionalDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRegisterDepozits">
+            <EntityTypeMapping TypeName="salihka1_SubscribeMembers_DBModel.UserRegisterDepozit">
+              <MappingFragment StoreEntitySet="UserRegisterDepozit">
+                <ScalarProperty Name="DepozitPrice" ColumnName="DepozitPrice" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

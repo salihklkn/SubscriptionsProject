@@ -18,6 +18,7 @@ namespace SubscriptionsProject.Models
         public User()
         {
             this.SubscriptionTransactions = new HashSet<SubscriptionTransaction>();
+            this.UserRegisterDepozits = new HashSet<UserRegisterDepozit>();
         }
     
         public int ID { get; set; }
@@ -34,5 +35,7 @@ namespace SubscriptionsProject.Models
         public virtual Subscription Subscription { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SubscriptionTransaction> SubscriptionTransactions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserRegisterDepozit> UserRegisterDepozits { get; set; }
     }
 }

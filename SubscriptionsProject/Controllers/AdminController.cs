@@ -81,7 +81,7 @@ namespace SubscriptionsProject.Controllers
 			}
 			else
 			{
-				if (db.Users.Where(x=> x.Username == usr.Username).Count() > 0)
+				if (db.Users.Where(x => x.Username == usr.Username).Count() > 0)
 				{
 					return Json(new { success = false, message = "Böyle bir kullanıcı adı ile kayıt zaten var" });
 				}
@@ -103,9 +103,6 @@ namespace SubscriptionsProject.Controllers
 				decimal decimalValue = Convert.ToDecimal(subsCurrents.Price);
 				double fiftyPercent = Convert.ToDouble(Convert.ToDouble(decimalValue) * 0.5);
 
-
-				
-
 				SubscriptionTransaction tran = new SubscriptionTransaction();
 				tran.IsPaid = true;
 				tran.UserID = db.Users.OrderByDescending(x => x.RegistrationDate).First().ID;
@@ -114,7 +111,13 @@ namespace SubscriptionsProject.Controllers
 				db.SubscriptionTransactions.Add(tran);
 				db.SaveChanges();
 
-				return Json(new { success = true, message = "Kullanıcı Eklendi. Lütfen  " +  fiftyPercent +  "₺ depozito tutarını almayı unutmayınız..." });
+				UserRegisterDepozit depozit = new UserRegisterDepozit();
+				depozit.DepozitPrice = Convert.ToDecimal(fiftyPercent);
+				depozit.UserID = db.Users.OrderByDescending(x => x.RegistrationDate).First().ID;
+				db.UserRegisterDepozits.Add(depozit);
+				db.SaveChanges();
+
+				return Json(new { success = true, message = "Kullanıcı Eklendi. Lütfen  " + fiftyPercent + "₺ depozito tutarını almayı unutmayınız..." });
 			}
 		}
 
