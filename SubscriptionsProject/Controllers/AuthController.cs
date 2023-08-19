@@ -1,4 +1,5 @@
 ﻿using SubscriptionsProject.Common;
+using SubscriptionsProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,33 +9,24 @@ using System.Web.Http;
 
 namespace SubscriptionsProject.Controllers
 {
-    public class AuthController : ApiController
-    {
-        [HttpPost]
-        [Route("api/login")]
-        [AllowAnonymous]
-        public string Login(string username, string password)
-        {
-            if (CheckUser(username, password))
-            {
-                return JwtManager.GenerateToken(username);
-            }
+	public class AuthController : ApiController
+	{
+		SubscribeMembers_DBEntities db = new SubscribeMembers_DBEntities();
 
-            throw new HttpResponseException(HttpStatusCode.Unauthorized);
-        }
+		[HttpPost]
+		[Route("api/AdminLogin")]
+		[AllowAnonymous]
+		public string AdminLogin(string username, string password)
+		{
+			var getAdmin = db.AdminUsers.Where(x => x.UserName == username && x.Password == password).FirstOrDefault();
+			if (getAdmin == null)
+			{
+				return "Kullanıcı adı veya Şifre hatalı";
+			}
 
-        public bool CheckUser(string username, string password)
-        {
-            // should check in the database
-            return true;
-        }
+			return JwtManager.GenerateToken(username);
 
-
-        [JwtAuthentication]
-        [Route("api/get")]
-        public string Get()
-        {
-            return "value";
-        }
-    }
+			throw new HttpResponseException(HttpStatusCode.Unauthorized);
+		}
+	}
 }
