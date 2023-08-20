@@ -75,6 +75,10 @@ namespace SubscriptionsProject.Controllers
 
 				db.SubscriptionTransactions.Add(sbsTran);
 				await db.SaveChangesAsync();
+
+				var getUser = db.Users.Where(x => x.ID == item.ID).First();
+				getUser.IsActive = false;
+				db.SaveChanges();
 			}
 
 			return processCount.ToString() + " adet kullanıcıya ait ödenmesi gereken fatura sisteme eklendi.";

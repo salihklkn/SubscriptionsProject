@@ -180,6 +180,15 @@ namespace SubscriptionsProject.Controllers
 				getUserConditionalDate.ConditionalDate = DateTime.Now.AddDays(Convert.ToInt32(getUserConditionalDate.Subscription.SubscriptionDayCount));
 				db.SaveChanges();
 
+				///Ödenmemiş başka faturası yok ise kullancıyı aktif et
+				int getUserTran = db.SubscriptionTransactions.Where(x => x.UserID == getUser.ID && x.IsPaid == false).Count();
+				if (getUserTran == 0)
+				{
+					var getUserInfo = db.Users.Where(x => x.ID == getUser.ID).First();
+					getUserInfo.IsActive = true;
+					db.SaveChanges();
+				}
+
 				return Json(new { success = true, message = "Ödeme işlemi başarılı" });
 			}
 			catch (Exception ex)
@@ -203,14 +212,23 @@ namespace SubscriptionsProject.Controllers
 				getTranInfo.IsPaid = true;
 				db.SaveChanges();
 
+
+				///Ödenmemiş başka faturası yok ise kullancıyı aktif et
+				int getUserTran = db.SubscriptionTransactions.Where(x => x.UserID == getUser.ID && x.IsPaid == false).Count();
+				if (getUserTran == 0)
+				{
+					var getUserInfo = db.Users.Where(x => x.ID == getUser.ID).First();
+					getUserInfo.IsActive = true;
+					db.SaveChanges();
+				}
+
+
 				return Json(new { success = true, message = "Ödeme işlemi başarılı" });
 			}
 			catch (Exception ex)
 			{
 				return Json(new { success = false, message = "Bir hata oluştu" });
 			}
-
-
 		}
 
 		[HttpPost]
