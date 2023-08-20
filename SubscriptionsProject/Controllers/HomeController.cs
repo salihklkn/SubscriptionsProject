@@ -169,22 +169,21 @@ namespace SubscriptionsProject.Controllers
 				int transactionId = Convert.ToInt32(tranId);
 				Helpers helper = new Helpers();
 				string sessionValue = helper.hasSessionAuth();
-				var getUser = helper.GetUserWithUserName(sessionValue);
 
 				var getTranInfo = db.SubscriptionTransactions.Where(x => x.ID == transactionId).First();
 				getTranInfo.IsPaid = true;
 				getTranInfo.TransactionDate = DateTime.Now;
 				db.SaveChanges();
 
-				var getUserConditionalDate = db.Users.Where(x => x.ID == getUser.ID).First();
+				var getUserConditionalDate = db.Users.Where(x => x.ID == getTranInfo.UserID).First();
 				getUserConditionalDate.ConditionalDate = DateTime.Now.AddDays(Convert.ToInt32(getUserConditionalDate.Subscription.SubscriptionDayCount));
 				db.SaveChanges();
 
 				///Ödenmemiş başka faturası yok ise kullancıyı aktif et
-				int getUserTran = db.SubscriptionTransactions.Where(x => x.UserID == getUser.ID && x.IsPaid == false).Count();
+				int getUserTran = db.SubscriptionTransactions.Where(x => x.UserID == getTranInfo.UserID && x.IsPaid == false).Count();
 				if (getUserTran == 0)
 				{
-					var getUserInfo = db.Users.Where(x => x.ID == getUser.ID).First();
+					var getUserInfo = db.Users.Where(x => x.ID == getTranInfo.UserID).First();
 					getUserInfo.IsActive = true;
 					db.SaveChanges();
 				}

@@ -55,6 +55,14 @@ namespace SubscriptionsProject.Controllers
 			getUserConditionalDate.ConditionalDate = DateTime.Now.AddDays(Convert.ToInt32(getUserConditionalDate.Subscription.SubscriptionDayCount));
 			db.SaveChanges();
 
+			int getUserTran = db.SubscriptionTransactions.Where(x => x.UserID == payment.UserID && x.IsPaid == false).Count();
+			if (getUserTran == 0)
+			{
+				var getUserInfo = db.Users.Where(x => x.ID == payment.UserID).First();
+				getUserInfo.IsActive = true;
+				db.SaveChanges();
+			}
+
 			return "success";
 		}
 
