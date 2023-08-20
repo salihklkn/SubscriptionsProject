@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace SubscriptionsProject.Controllers
@@ -19,65 +20,62 @@ namespace SubscriptionsProject.Controllers
 		[HttpPost]
 		[Route("api/AddUser")]
 		[JwtAuthentication]
-		public string AddUser([FromBody] AddUserModel user)
+		public async Task<object> AddUser([FromBody] AddUserModel user)
 		{
 			try
 			{
 				if (String.IsNullOrEmpty(user.UserName) == true || String.IsNullOrEmpty(user.Password) == true || String.IsNullOrEmpty(user.Name) == true || String.IsNullOrEmpty(user.Surname) == true || String.IsNullOrEmpty(user.PhoneNumber) == true)
 				{
-					return "isim, soyad, kullanıcı adı, şifre , telefon numarası boş bırakılamaz";
+					return Ok(new ApiResponse<string>
+					{
+						Success = false,
+						Message = "isim, soyad, kullanıcı adı, şifre , telefon numarası boş bırakılamaz.",
+					});
 				}
 				if (user.CurrentSubscriptionID == 0)
 				{
-					return "Kullanıcı eklemek için başlayacağı bir abonelik girilmelidir abonelik kampanyalarını listeleyin ve bir ID atayın.  /api/GetAllSubscriptions";
+					return Ok(new ApiResponse<string>
+					{
+						Success = false,
+						Message = "Kullanıcı eklemek için başlayacağı bir abonelik girilmelidir abonelik kampanyalarını listeleyin ve bir ID atayın.  /api/GetAllSubscriptions.",
+					});
 				}
 
 				if (db.Users.Where(x => x.Username == user.UserName).Count() > 0)
 				{
-					return "Böyle bir kullanıcı adı ile kayıt zaten var";
+					return Ok(new ApiResponse<string>
+					{
+						Success = false,
+						Message = "Böyle bir kullanıcı adı ile kayıt zaten var.",
+					});
 				}
 
-				User usr = new User();
-				usr.IsActive = true;
-				usr.Name = user.Name;
-				usr.Username = user.UserName;
-				usr.Password = user.Password;
-				usr.Surname = user.Surname;
-				usr.PhoneNumber = user.PhoneNumber;
-				usr.RegistrationDate = DateTime.Now;
 				var subsCurrents = db.Subscriptions.Where(x => x.ID == user.CurrentSubscriptionID).FirstOrDefault();
 				if (subsCurrents == null)
 				{
-					return "Abonelik Kampanyası bulunamadı.  /api/GetAllSubscriptions";
+					return Ok(new ApiResponse<string>
+					{
+						Success = false,
+						Message = "Abonelik Kampanyası bulunamadı.  /api/GetAllSubscriptions",
+					});
 				}
-				usr.ConditionalDate = DateTime.Now.AddDays(Convert.ToInt32(subsCurrents.SubscriptionDayCount));
-				usr.CurrentSubscriptionID = user.CurrentSubscriptionID;
 
-				db.Users.Add(usr);
-				db.SaveChanges();
+				Helpers helper = new Helpers();
+				string percentVal = await helper.AddNewUserApi(user);
 
-				decimal decimalValue = Convert.ToDecimal(subsCurrents.Price);
-				double fiftyPercent = Convert.ToDouble(Convert.ToDouble(decimalValue) * 0.5);
-
-				SubscriptionTransaction tran = new SubscriptionTransaction();
-				tran.IsPaid = true;
-				tran.UserID = db.Users.OrderByDescending(x => x.RegistrationDate).First().ID;
-				tran.SubscriptionID = usr.ID;
-				tran.TransactionDate = DateTime.Now;
-				db.SubscriptionTransactions.Add(tran);
-				db.SaveChanges();
-
-				UserRegisterDepozit depozit = new UserRegisterDepozit();
-				depozit.DepozitPrice = Convert.ToDecimal(fiftyPercent);
-				depozit.UserID = db.Users.OrderByDescending(x => x.RegistrationDate).First().ID;
-				db.UserRegisterDepozits.Add(depozit);
-				db.SaveChanges();
-
-				return "success";
+				return Ok(new ApiResponse<string>
+				{
+					Success = true,
+					Message = "Kullanıcı ekleme işlemi başarılı. Lütfen üyemizden "+ percentVal.ToString() +" ₺ depozito tutarı isteyiniz.",
+				});
 			}
 			catch (Exception ex)
 			{
-				return ex.Message;
+				return Ok(new ApiResponse<string>
+				{
+					Success = false,
+					Message = "Bir hata oluştu " + ex.Message.ToString() ,
+				});
 			}
 
 		}
@@ -86,7 +84,7 @@ namespace SubscriptionsProject.Controllers
 		[HttpGet]
 		[Route("api/GetAllUser")]
 		[JwtAuthentication]
-		public List<GetAllUserModel> GetAllUser()
+		public object GetAllUser()
 		{
 			var getAllUser = db.Users.ToList();
 
@@ -108,14 +106,21 @@ namespace SubscriptionsProject.Controllers
 					UserName = item.Username,
 				});
 			}
-			return allUsers;
+
+			return Ok(new ApiResponse<List<GetAllUserModel>>
+			{
+				Success = true,
+				Message = "",
+				Data = allUsers,
+			});
+
 		}
 
 		///içinde girilen değerlere göre geçen tüm kullanıcılar bulunur ve geçmiş işlemleri de gözükür
 		[HttpGet]
 		[Route("api/GetUser")]
 		[JwtAuthentication]
-		public List<GetUserModel> GetUser(GetUserModel usr)
+		public object GetUser(GetUserModel usr)
 		{
 			var getAllUser = db.Users.Where(x => x.ID == usr.ID || x.Name == usr.Name || x.Surname == usr.Surname || x.PhoneNumber == usr.PhoneNumber || x.Username == usr.UserName).ToList();
 
@@ -150,39 +155,61 @@ namespace SubscriptionsProject.Controllers
 				}
 				users.Add(newUser);
 			}
-			return users;
+
+			return Ok(new ApiResponse<List<GetUserModel>>
+			{
+				Success = true,
+				Message = "",
+				Data = users,
+			});
 		}
 
 
 		[HttpPost]
 		[Route("api/FreezeUser")]
 		[JwtAuthentication]
-		public string FreezeUser([FromBody] FreezeUserModel user)
+		public object FreezeUser([FromBody] FreezeUserModel user)
 		{
 			try
 			{
 				if (user.ID == 0)
 				{
-					return "ID değeri boş bırakılamaz";
+					return Ok(new ApiResponse<string>
+					{
+						Success = false,
+						Message = "ID değeri boş bırakılamaz",
+					});
 				}
 
 				var getUser = db.Users.Where(x => x.ID == user.ID).FirstOrDefault();
 
 				if (getUser == null)
 				{
-					return "Belirtilen ID değerine uygun bir kayıt bulunamadı";
+					return Ok(new ApiResponse<string>
+					{
+						Success = false,
+						Message = "Belirtilen ID değerine uygun bir kayıt bulunamadı",
+					});
 				}
 
 				if (getUser.IsActive == false)
 				{
-					return "Bu kullanıcı zaten donduruldu";
+					return Ok(new ApiResponse<string>
+					{
+						Success = false,
+						Message = "Bu kullanıcı zaten donduruldu",
+					});
 				}
 
 				var hasUnpaidTrans = db.SubscriptionTransactions.Where(x => x.UserID == getUser.ID && x.IsPaid == false).Count();
 
 				if (hasUnpaidTrans > 0)
 				{
-					return "BU üyemiz için Ödenmemiş faturalar mevcut.";
+					return Ok(new ApiResponse<string>
+					{
+						Success = false,
+						Message = "BU üyemiz için Ödenmemiş faturalar mevcut.",
+					});
 				}
 
 				getUser.IsActive = false;
@@ -193,15 +220,26 @@ namespace SubscriptionsProject.Controllers
 				if (getDepositAmount != null)
 				{
 					decimal price = Convert.ToDecimal(getDepositAmount.DepozitPrice);
-					return "Abonelik Dondurma işlemi tamamlandı. Lütfen kullanıcının ödemiş olduğu " + price.ToString() + "₺ depozito tutarını iade ediniz";
+					return Ok(new ApiResponse<string>
+					{
+						Success = true,
+						Message = "Abonelik Dondurma işlemi tamamlandı. Lütfen kullanıcının ödemiş olduğu " + price.ToString() + "₺ depozito tutarını iade ediniz",
+					});
 				}
 
-
-				return "Başarılı";
+				return Ok(new ApiResponse<string>
+				{
+					Success = true,
+					Message = "Abonelik Dondurma işlemi tamamlandı",
+				});
 			}
 			catch (Exception ex)
 			{
-				return ex.Message;
+				return Ok(new ApiResponse<string>
+				{
+					Success = false,
+					Message = ex.Message,
+				});
 			}
 			
 		}

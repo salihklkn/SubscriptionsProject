@@ -213,7 +213,6 @@ namespace SubscriptionsProject.Controllers
 				db.SaveChanges();
 
 
-				///Ödenmemiş başka faturası yok ise kullancıyı aktif et
 				int getUserTran = db.SubscriptionTransactions.Where(x => x.UserID == getUser.ID && x.IsPaid == false).Count();
 				if (getUserTran == 0)
 				{

@@ -83,5 +83,13 @@ namespace SubscriptionsProject.Models.ApiModels
 		public int ID { get; set; }
 	}
 
+	public class AddNewSubscriptionCampaignModel
+	{
+		public string Name { get; set; }
+		public decimal Price { get; set; }
+		public int DayCount { get; set; }
+		public bool? IsActive { get; set; }
+	}
+
 
 }

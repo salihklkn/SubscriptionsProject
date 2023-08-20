@@ -86,36 +86,10 @@ namespace SubscriptionsProject.Controllers
 					return Json(new { success = false, message = "Böyle bir kullanıcı adı ile kayıt zaten var" });
 				}
 
-				User newUser = new User();
-				newUser.Name = usr.Name;
-				newUser.Surname = usr.Surname;
-				newUser.PhoneNumber = usr.PhoneNumber;
-				newUser.IsActive = true;
-				newUser.Username = usr.Username;
-				newUser.Password = usr.Password;
-				newUser.RegistrationDate = DateTime.Now;
-				var subsCurrents = db.Subscriptions.Where(x => x.ID == usr.ID).First();
-				newUser.ConditionalDate = DateTime.Now.AddDays(Convert.ToInt32(subsCurrents.SubscriptionDayCount));
-				newUser.CurrentSubscriptionID = usr.ID;
-				db.Users.Add(newUser);
-				db.SaveChanges();
 
-				decimal decimalValue = Convert.ToDecimal(subsCurrents.Price);
-				double fiftyPercent = Convert.ToDouble(Convert.ToDouble(decimalValue) * 0.5);
 
-				SubscriptionTransaction tran = new SubscriptionTransaction();
-				tran.IsPaid = true;
-				tran.UserID = db.Users.OrderByDescending(x => x.RegistrationDate).First().ID;
-				tran.SubscriptionID = usr.ID;
-				tran.TransactionDate = DateTime.Now;
-				db.SubscriptionTransactions.Add(tran);
-				db.SaveChanges();
-
-				UserRegisterDepozit depozit = new UserRegisterDepozit();
-				depozit.DepozitPrice = Convert.ToDecimal(fiftyPercent);
-				depozit.UserID = db.Users.OrderByDescending(x => x.RegistrationDate).First().ID;
-				db.UserRegisterDepozits.Add(depozit);
-				db.SaveChanges();
+				Helpers helper = new Helpers();
+				string fiftyPercent = helper.AddNewUser(usr);
 
 				return Json(new { success = true, message = "Kullanıcı Eklendi. Lütfen  " + fiftyPercent + "₺ depozito tutarını almayı unutmayınız..." });
 			}
@@ -144,7 +118,7 @@ namespace SubscriptionsProject.Controllers
 		{
 			var getUser = db.Users.Where(x => x.ID == memberId).First();
 
-			if (db.SubscriptionTransactions.Where(x=> x.UserID == memberId && x.IsPaid == false).Count() > 0)
+			if (db.SubscriptionTransactions.Where(x => x.UserID == memberId && x.IsPaid == false).Count() > 0)
 			{
 				return Json(new { success = false, message = "Henüz bu kullanıcının ödenmemiş faturaları mevcut, üye dondurulamaz, önce ödeme işlemlerini yapınız" });
 			}
